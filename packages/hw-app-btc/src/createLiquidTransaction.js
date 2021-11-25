@@ -214,7 +214,8 @@ export async function createLiquidTransaction(
     else {
       currentOutput["nonce"] = Buffer.from(outputs[i][4], "hex");
       currentOutput["remoteBlindingKey"] = Buffer.from(outputs[i][3], "hex");    
-      if (currentOutput["script"].length > 0) {
+      // If the script does not start with OP_RETURN, get the commitment.
+      if (currentOutput["script"].length > 0 && currentOutput["script"][0] != 0x6a) {
         const assetValueCommitment = await liquidGetCommitments(
           transport,
           Buffer.from(outputs[i][1], "hex"),
